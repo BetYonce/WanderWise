@@ -1,0 +1,53 @@
+/*.single-box {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px
+}*/
+.travel-plan-header h1{
+    padding-top: 2px;
+    margin-bottom: 1px;
+    margin-top: 50px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 8em;
+    line-height: 116px;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.86) 0.01%, rgba(255, 255, 255, 0.7) 45.62%, rgba(255, 255, 255, 0) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    mix-blend-mode: normal;
+}
+
+.card-header {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+
+.travel-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    
+}
+
+.travel-plan-header {
+    margin-bottom: 50px;
+}
+
+.default-none {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

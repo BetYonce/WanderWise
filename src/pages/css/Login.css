@@ -1,0 +1,55 @@
+/* Custom styles for the form */
+.form-container {
+    width: 28em;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 50px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-field {
+    margin-bottom: 10px;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  
+  .form-submit {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .form-submit button {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #57066B;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 5px;
+  }
+
+/*span {
+  color: red;
+  margin-top: 35px;
+}*/
+  

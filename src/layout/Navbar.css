@@ -1,0 +1,46 @@
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    top: 0; /* This ensures it's at the very top */
+    width: 100%;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 30px; /* Spacing between links */
+    color: #fff;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: semi-bold;
+  }
+  
+  .account-button {
+    margin-left: 20px; /* Add some space between the links and the account button */
+    background-color: transparent;
+    color: #fff;
+    border-radius: 50px;
+    border-color: solid white;
+    border: 1px solid;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .account-button a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .account-button:hover {
+    background-color: #0069d9;
+  }
+  
+  .account-button a:hover {
+    color: #fff;
+  }
+  
