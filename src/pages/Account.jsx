@@ -126,7 +126,7 @@ function AccountPage() {
                   <Icon
                     name="upload"
                     onClick={handleIconClick}
-                    style={{ cursor: "pointer", marginTop: "10px" }}
+                    style={{ cursor: "pointer" }}
                   />
                   {uploadProgress > 0 && (
                     <Progress percent={uploadProgress} indicating />
