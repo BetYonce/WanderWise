@@ -59,13 +59,15 @@ const TravelPlan = () => {
                   <h3>Your Plan is Ready!</h3>
                   <div className="card-header">
                     <Card.Header ><h1>{item.state}</h1></Card.Header>
-
                   </div>
                   <Card.Description>
-                    <h4>Your trip for today</h4>
-                    {item.locations.map((location, index) => (
-                      <p key={index}>Visit {location}</p>
-                    ))}
+                    <h3>{item.district}</h3>
+                    <h4>Visit {item.location} for {item.activity} activity</h4>
+                    <p>Hours of Operation: {item.hoursOfOperation}</p>
+                    <p>Estimated Visit Duration: {item.estimatedVisitDuration}</p>
+                    <p>Cost of Visit (RM): {item.costOfVisit}</p>
+                    <p>Type of Location: {item.typeOfLocation}</p>
+                    <p>Popularity: {item.popularity}</p>
                   </Card.Description>
                 </Card.Content>
                 <div className=''>

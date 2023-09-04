@@ -1,58 +1,52 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import pandas as pd
-import joblib
-import numpy as np
-
+from joblib import load
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app, resources={r"/predict": {"origins": "http://localhost:5173"}})
 
-# load the model
-model = joblib.load('model.joblib')
+# Load the model
+kmeans = load('model.joblib') 
 
-# features from the model
-features = joblib.load('features.joblib')
+# Load the original DataFrame
+original_df = pd.read_pickle('original_df.pkl')
 
-@app.route('/predict', methods=['POST'])
-@cross_origin()
-def predict():
+@app.route('/predict', methods=['POST'])  
+def recommend():
     # Get data from POST request
     data = request.get_json(force=True)
 
-    # Convert data into dataframe
-    input_data = pd.DataFrame.from_dict({
-        'state': [data['state']],
-        'district': [data['district']],
-        'activity': [data['activity']]
-    })
+    # Get recommendation
+    recommendation = recommend_location(data['state'], data['district'], data['activity'])
 
-    # One hot encode the data
-    input_data_encoded = pd.get_dummies(input_data)
+    # Check if recommendation is a DataFrame
+    if isinstance(recommendation, pd.Series):
+        # If it's a Series, convert to dictionary and return as JSON
+        return jsonify(recommendation.to_dict())
+    else:
+        # If it's not a Series (i.e., it's a string), just return the string
+        return recommendation
 
-    # Add missing columns and set them to 0
-    missing_cols = set(features) - set(input_data_encoded.columns)
-    for c in missing_cols:
-        input_data_encoded[c] = 0
+# Recommendation function
+def recommend_location(state, district, activity):
+    # Filter the original DataFrame based on the user's input
+    filtered_df = original_df[(original_df['state'] == state) & (original_df['district'] == district) & (original_df['activity'] == activity)]
+    
+    # If there are no locations that match the user's input, return a message
+    if filtered_df.empty:
+        return "No locations found that match your criteria."
+    
+    # Otherwise, return the location with the highest popularity
+    else:
+        recommended_location = filtered_df.loc[filtered_df['popularity'].idxmax()]
+        # Select only the columns you want to return
+        recommended_location = recommended_location[['state', 'district', 'activity', 'location', 'hours of operation', 'estimated visit duration', 'cost of visit', 'type of location', 'popularity']]
+        return recommended_location
 
-    # Ensure the order of columns in the dataframe
-    input_data_encoded = input_data_encoded[features]
-
-    # Make prediction
-    prediction_proba = model.predict_proba(input_data_encoded)
-
-    # Get top 2 predictions
-    top2_indices = np.argsort(prediction_proba, axis=1)[:, -2:]  
-    top2_predictions = [model.classes_[indices] for indices in top2_indices]
-
-    return jsonify({
-        'state': data['state'],
-        'district': data['district'],
-        'activity': data['activity'],
-        'location_1': top2_predictions[0][0],
-        'location_2': top2_predictions[0][1]
-    })
+@app.route('/')
+def home():
+    return "Hello, World!"
 
 
 if __name__ == "__main__":

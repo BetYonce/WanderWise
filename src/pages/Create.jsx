@@ -27,9 +27,9 @@ const districtOptions = {
 };
 
 const activityOptions = [
-  { key: "leisure", value: "leisure", text: "Leisure" },
-  { key: "nature", value: "nature", text: "Nature" },
-  { key: "culture", value: "culture", text: "Culture" },
+  { key: "leisure", value: "Leisure", text: "Leisure" },
+  { key: "nature", value: "Nature", text: "Nature" },
+  { key: "culture", value: "Culture", text: "Culture" },
 ];
 
 const CreateTrip = () => {
@@ -57,8 +57,16 @@ const CreateTrip = () => {
         }),
       });
       const data = await response.json();
-      setPredictedLocations([data.location_1, data.location_2].filter(Boolean));
-      setIsPredicted(true);
+
+      // Check if the response contains a message
+      if (data.message) {
+        // If it does, show an alert with the message
+        alert(data.message);
+      } else {
+        // If it doesn't, it's an object, so you can proceed as before
+        setPredictedLocations([data]);
+        setIsPredicted(true);
+      }
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -72,25 +80,31 @@ const CreateTrip = () => {
       try {
         // Get current user
         const user = auth.currentUser;
-
+  
         // If user is logged in
         if (user) {
-          const docRef = await addDoc(collection(db, "trips"), {
-            userId: user.uid, // This links the plan to the user
-            state: state,
-            district: district,
-            activity: activity,
-            locations: predictedLocations,
-            createdAt: serverTimestamp(),
-          });
-
-          console.log("Document written with ID: ", docRef.id);
+          for (let location of predictedLocations) {
+            const docRef = await addDoc(collection(db, "trips"), {
+              userId: user.uid, // This links the plan to the user
+              state: state,
+              district: district,
+              activity: activity,
+              location: location.location,
+              hoursOfOperation: location['hours of operation'],
+              estimatedVisitDuration: location['estimated visit duration'],
+              costOfVisit: location['cost of visit'],
+              typeOfLocation: location['type of location'],
+              popularity: location.popularity,
+              createdAt: serverTimestamp(),
+            });
+  
+            console.log("Document written with ID: ", docRef.id);
+          }
           setSaveSuccess(true); // add this line
-
+  
           setTimeout(() => {
             setSaveSuccess(false); // and this line
           }, 3000);
-
         } else {
           console.error("No user is signed in.");
         }
@@ -100,8 +114,7 @@ const CreateTrip = () => {
     } else {
       console.error("No predicted data to save.");
     }
-  };
-
+  };  
 
   return (
     <>
@@ -158,26 +171,32 @@ const CreateTrip = () => {
             </button>
           </div>
           <div className="result">
-            {isLoading ? (
-              <h2>Loading...</h2>
-            ) : predictedLocations.length ? (
-              <>
-                <h3>
-                  Your Travel plan for {district}, {state} is
-                </h3>
+        {isLoading ? (
+          <h2>Loading...</h2>
+        ) : predictedLocations.length ? (
+          <>
+            <h3>
+              Your Travel plan for {district}, {state} is
+            </h3>
+            {predictedLocations.map((location, index) => (
+              <div key={index}>
                 <h4>
-                  Visit {predictedLocations[0]} for {activity} activity{" "}
+                  Visit {location.location} for {activity} activity
                 </h4>
-                <h4>
-                  Visit {predictedLocations[1]} for {activity} activity{" "}
-                </h4>
-                <button className="create-button" onClick={saveTravel}>
-                  Save Plan
-                </button>
-                {saveSuccess && <p>Plan saved successfully!</p>} {/* add this line */}
-              </>
-            ) : null}
-          </div>
+                <p>Hours of Operation: {location['hours of operation']}</p>
+                <p>Estimated Visit Duration: {location['estimated visit duration']}</p>
+                <p>Cost of Visit (RM): {location['cost of visit']}</p>
+                <p>Type of Location: {location['type of location']}</p>
+                <p>Popularity: {location.popularity}</p>
+              </div>
+            ))}
+            <button className="create-button" onClick={saveTravel}>
+              Save Plan
+            </button>
+            {saveSuccess && <p>Plan saved successfully!</p>}{" "}
+          </>
+        ) : null}
+      </div>
         </div>
 
         <div>
